@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from time import time
 import matplotlib.pyplot as plt
 from prep_terrain_data import makeTerrainData
 from class_vis import prettyPicture
@@ -15,7 +16,7 @@ bumpy_fast = [features_train[ii][1] for ii in range(0, len(features_train)) if l
 grade_slow = [features_train[ii][0] for ii in range(0, len(features_train)) if labels_train[ii]==1]
 bumpy_slow = [features_train[ii][1] for ii in range(0, len(features_train)) if labels_train[ii]==1]
 
-
+'''
 #### initial visualization
 plt.xlim(0.0, 1.0)
 plt.ylim(0.0, 1.0)
@@ -26,19 +27,57 @@ plt.xlabel("bumpiness")
 plt.ylabel("grade")
 plt.show()
 ################################################################################
-
+'''
 
 ### your code here!  name your classifier object clf if you want the 
 ### visualization code (prettyPicture) to show you the decision boundary
 
+from sklearn.ensemble import AdaBoostClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.svm import SVC
 
+clf = AdaBoostClassifier(n_estimators=100, learning_rate=0.5, algorithm='SAMME')
+t0 = time()
+clf.fit(features_train, labels_train)
+print "training time:", round(time()-t0, 3), "s"
 
+t1 = time()
+pred = clf.predict(features_test)
+print "predict time:", round(time()-t1, 3), "s"
 
+print accuracy_score(pred, labels_test)
 
+from sklearn.ensemble import RandomForestClassifier
+clf = RandomForestClassifier(n_estimators=50, min_samples_split=10)
+t0 = time()
+clf.fit(features_train, labels_train)
+print "training time:", round(time()-t0, 3), "s"
 
+t1 = time()
+pred = clf.predict(features_test)
+print "predict time:", round(time()-t1, 3), "s"
 
+print accuracy_score(pred, labels_test)
 
-try:
-    prettyPicture(clf, features_test, labels_test)
-except NameError:
-    pass
+from sklearn.neighbors import KNeighborsClassifier
+clf = KNeighborsClassifier(n_neighbors=2, weights="distance")
+t0 = time()
+clf.fit(features_train, labels_train)
+print "training time:", round(time()-t0, 3), "s"
+
+t1 = time()
+pred = clf.predict(features_test)
+print "predict time:", round(time()-t1, 3), "s"
+
+print accuracy_score(pred, labels_test)
+
+#pintar resultado
+#try:
+#    prettyPicture(clf, features_test, labels_test)
+#except NameError:
+#    pass
+
+#Adaboost = 0.924
+#Naive Bayes = 0.884
+#SVC = 0.932
+#decissiontree = 0.912
