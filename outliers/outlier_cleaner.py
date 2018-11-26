@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+from sklearn.feature_selection import SelectPercentile, f_classif
+from operator import itemgetter
 
 def outlierCleaner(predictions, ages, net_worths):
     """
@@ -14,7 +16,13 @@ def outlierCleaner(predictions, ages, net_worths):
     cleaned_data = []
 
     ### your code goes here
+    zipped = zip(ages, net_worths, abs(net_worths - predictions))
 
-    
+    zipped.sort(key=itemgetter(2))
+
+    new_len = int(len(zipped) * 0.9)
+
+    cleaned_data = zipped[: new_len]
+
     return cleaned_data
 
